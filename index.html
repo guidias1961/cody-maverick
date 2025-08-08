@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>$CODY — Surf's Up on Abstract</title>
+  <meta name="description" content="$CODY — the surfing penguin memecoin riding waves on Abstract Network. Buy, track, and join the army." />
+  <meta property="og:title" content="$CODY — Surf's Up on Abstract" />
+  <meta property="og:description" content="The surfing penguin memecoin. Cute vibes, pro UI, degen-ready." />
+  <meta property="og:image" content="logo.png" />
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["DM Sans", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+            display: ["Space Grotesk", "DM Sans", "sans-serif"],
+          },
+          colors: {
+            brand: {
+              50:  "#E6FBFF",
+              100: "#C0F5FF",
+              200: "#8DEFFF",
+              300: "#54E6FE",
+              400: "#21D6FA",
+              500: "#00C3F2", /* neon-ish blue */
+              600: "#0099C2",
+              700: "#0B6C8A",
+              800: "#0F4C61",
+              900: "#0D3646",
+            },
+            ink: "#0A0B0E",
+            ocean: "#0E1B2E",
+            lilac: "#B7A6FF",
+            lemon: "#FFE26D",
+            mint:  "#B7F3E6",
+          },
+          boxShadow: {
+            glow: "0 0 0 4px rgba(0,195,242,.12), 0 10px 40px rgba(0,195,242,.25)",
+          },
+          backgroundImage: {
+            hero: "radial-gradient(1000px 600px at 20% -10%, rgba(183,243,230,.35), transparent 60%), radial-gradient(900px 500px at 90% -10%, rgba(183,166,255,.25), transparent 60%), linear-gradient(180deg, #0A0B0E 0%, #0E1B2E 60%, #0A0B0E 100%)",
+            stripe: "repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 16px)",
+          },
+          keyframes: {
+            floaty: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)'} },
+            shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+            marquee: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
+          },
+          animation: {
+            floaty: 'floaty 6s ease-in-out infinite',
+            shimmer: 'shimmer 2.2s linear infinite',
+            marquee: 'marquee 22s linear infinite',
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    .glass { backdrop-filter: blur(12px); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08) }
+    .btn { @apply inline-flex items-center justify-center gap-2 rounded-full font-bold px-6 py-3 transition-all; }
+    .btn-primary { @apply bg-brand-500 text-ink hover:shadow-glow hover:-translate-y-0.5; }
+    .btn-outline { @apply border border-white/20 text-white hover:bg-white/10; }
+    .badge { @apply text-xs uppercase tracking-wider font-bold rounded-full px-3 py-1; }
+  </style>
+</head>
+
+<body class="bg-ink text-white selection:bg-brand-300/40">
+  <!-- NAV -->
+  <header class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-ink/60 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3">
+        <img src="logo.png" alt="$CODY" class="h-9 w-9 rounded-full shadow-glow animate-floaty" />
+        <span class="font-display text-xl font-bold">$CODY</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#about" class="hover:text-brand-300">About</a>
+        <a href="#how" class="hover:text-brand-300">How to Buy</a>
+        <a href="#token" class="hover:text-brand-300">Tokenomics</a>
+        <a href="#gallery" class="hover:text-brand-300">Gallery</a>
+        <a href="#faq" class="hover:text-brand-300">FAQ</a>
+      </nav>
+      <div class="hidden md:flex items-center gap-3">
+        <a target="_blank" href="#" class="btn btn-outline">Chart</a>
+        <a target="_blank" href="#" class="btn btn-primary">Buy $CODY</a>
+      </div>
+      <button id="navBtn" class="md:hidden p-2 rounded-lg hover:bg-white/10" aria-label="Open menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+      </button>
+    </div>
+    <!-- Mobile -->
+    <div id="navMenu" class="md:hidden hidden border-t border-white/10 bg-ink/95">
+      <div class="max-w-7xl mx-auto px-4 py-4 grid gap-3">
+        <a href="#about" class="py-2">About</a>
+        <a href="#how" class="py-2">How to Buy</a>
+        <a href="#token" class="py-2">Tokenomics</a>
+        <a href="#gallery" class="py-2">Gallery</a>
+        <a href="#faq" class="py-2">FAQ</a>
+        <div class="flex gap-2 pt-2">
+          <a target="_blank" href="#" class="btn btn-outline grow">Chart</a>
+          <a target="_blank" href="#" class="btn btn-primary grow">Buy</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TICKER / MARQUEE -->
+  <div class="pt-16 bg-stripe border-b border-white/10">
+    <div class="overflow-hidden whitespace-nowrap">
+      <div class="animate-marquee flex items-center gap-10 py-2 text-sm text-white/70">
+        <span class="badge bg-white/10 text-brand-300">LIVE</span>
+        <span>Chain: <b>Abstract</b></span>
+        <span>Tax: <b>0%</b></span>
+        <span>LP: <b>Burned</b></span>
+        <span>Contract: <b id="caShort">0xC0...DY</b> <button class="ml-2 text-brand-300 underline" id="copyCA">Copy</button></span>
+        <span>Launchpad: <b>Moonshot</b></span>
+        <span>Audited: <b>—</b></span>
+        <span>Twitter • Telegram • Dexscreener</span>
+        <!-- clones for seamless loop -->
+        <span class="badge bg-white/10 text-brand-300">LIVE</span>
+        <span>Chain: <b>Abstract</b></span>
+        <span>Tax: <b>0%</b></span>
+        <span>LP: <b>Burned</b></span>
+        <span>Contract: <b>0xC0...DY</b></span>
+        <span>Launchpad: <b>Moonshot</b></span>
+        <span>Audited: <b>—</b></span>
+        <span>Twitter • Telegram • Dexscreener</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="relative bg-hero">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 grid md:grid-cols-2 gap-14 items-center">
+      <div>
+        <div class="badge bg-white/10 text-brand-300">Surfing Penguin on Abstract</div>
+        <h1 class="mt-5 font-display text-4xl md:text-6xl font-bold leading-tight">
+          Surf’s Up, <span class="text-brand-300">Degen</span>.<br />Catch the Wave with <span class="text-brand-500">$CODY</span>
+        </h1>
+        <p class="mt-6 text-white/80 text-lg max-w-xl">Cute brand, clean UX, and a community that actually vibes. Built for memes, powered by Abstract. No promises, just penguins.</p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a target="_blank" href="#" class="btn btn-primary">Buy $CODY</a>
+          <a target="_blank" href="#" class="btn btn-outline">View Chart</a>
+          <a target="_blank" href="#" class="btn btn-outline">Telegram</a>
+          <a target="_blank" href="#" class="btn btn-outline">Twitter</a>
+        </div>
+        <div class="mt-8 p-4 glass rounded-2xl inline-flex items-center gap-4">
+          <img src="logo.png" alt="CODY badge" class="h-10 w-10 rounded-full shadow-glow" />
+          <div>
+            <div class="text-sm text-white/60">Contract</div>
+            <button id="copyCA2" class="font-mono text-sm md:text-base hover:text-brand-300">0xC0DY0000000000000000000000000000000000</button>
+          </div>
+        </div>
+      </div>
+      <div class="relative">
+        <!-- Optional background video -->
+        <div class="absolute -inset-6 rounded-[2rem] opacity-60 blur-2xl" style="background: radial-gradient(60% 60% at 50% 40%, rgba(0,195,242,.35), transparent 60%), radial-gradient(40% 40% at 70% 60%, rgba(183,166,255,.25), transparent 60%)"></div>
+        <div class="glass rounded-[2rem] p-4 md:p-6 relative">
+          <video class="rounded-[1.5rem] w-full aspect-[4/3] object-cover" autoplay loop muted playsinline src="cody-maverick-surf.mp4"></video>
+        </div>
+        <img src="logo.png" alt="Mascot" class="absolute -bottom-8 -left-8 h-24 w-24 rounded-2xl shadow-glow animate-floaty" />
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST / STATS STRIP -->
+  <section class="py-10 border-y border-white/10 bg-stripe">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass p-5 rounded-xl text-center">
+        <div class="text-2xl font-display">0%</div>
+        <div class="text-white/70 text-sm">Buy/Sell Tax</div>
+      </div>
+      <div class="glass p-5 rounded-xl text-center">
+        <div class="text-2xl font-display">1,000,000,000</div>
+        <div class="text-white/70 text-sm">Total Supply</div>
+      </div>
+      <div class="glass p-5 rounded-xl text-center">
+        <div class="text-2xl font-display">Burned</div>
+        <div class="text-white/70 text-sm">LP Status</div>
+      </div>
+      <div class="glass p-5 rounded-xl text-center">
+        <div class="text-2xl font-display">Abstract</div>
+        <div class="text-white/70 text-sm">Network</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-14 items-center">
+      <div>
+        <h2 class="font-display text-3xl md:text-5xl font-bold">Cute Brand. Serious Vibes.</h2>
+        <p class="mt-6 text-white/80">CODY brings the feel-good energy of a surfing penguin with a site that actually looks and feels professional. Inspired by top-tier meme brands, trimmed for speed, built for sharing.</p>
+        <ul class="mt-6 grid sm:grid-cols-2 gap-3 text-white/80">
+          <li class="glass rounded-xl px-4 py-3">Pixel-perfect, mobile-first</li>
+          <li class="glass rounded-xl px-4 py-3">Smooth GSAP reveals</li>
+          <li class="glass rounded-xl px-4 py-3">Copy-to-clipboard CA</li>
+          <li class="glass rounded-xl px-4 py-3">One-click actions: Buy/Chart</li>
+        </ul>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <img src="1.png" class="rounded-2xl object-cover w-full h-48 md:h-64 glass" alt="Cody 1" />
+        <img src="2.png" class="rounded-2xl object-cover w-full h-48 md:h-64 glass" alt="Cody 2" />
+        <img src="3.png" class="rounded-2xl object-cover w-full h-48 md:h-64 glass" alt="Cody 3" />
+        <img src="4.png" class="rounded-2xl object-cover w-full h-48 md:h-64 glass" alt="Cody 4" />
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW TO BUY -->
+  <section id="how" class="py-20 md:py-28 bg-ocean/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="font-display text-3xl md:text-5xl font-bold">How to Buy</h2>
+        <p class="mt-4 text-white/80">Three simple steps to catch the wave.</p>
+      </div>
+      <div class="mt-12 grid md:grid-cols-3 gap-6">
+        <div class="glass rounded-2xl p-6">
+          <div class="badge bg-white/10 text-lemon">Step 1</div>
+          <h3 class="mt-3 font-display text-xl">Get a wallet</h3>
+          <p class="mt-2 text-white/70">Install a wallet that supports Abstract. Fund it with the native token.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="badge bg-white/10 text-mint">Step 2</div>
+          <h3 class="mt-3 font-display text-xl">Go to Moonshot</h3>
+          <p class="mt-2 text-white/70">Open our listing and paste the contract address.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="badge bg-white/10 text-lilac">Step 3</div>
+          <h3 class="mt-3 font-display text-xl">Buy $CODY</h3>
+          <p class="mt-2 text-white/70">Set slippage if needed (0% taxes). Confirm the swap and hodl.</p>
+        </div>
+      </div>
+      <div class="mt-10 flex flex-wrap gap-3 justify-center">
+        <a target="_blank" href="#" class="btn btn-primary">Buy on Moonshot</a>
+        <a target="_blank" href="#" class="btn btn-outline">Open Dexscreener</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKENOMICS -->
+  <section id="token" class="py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="font-display text-3xl md:text-5xl font-bold">Tokenomics</h2>
+        <p class="mt-4 text-white/80">Clean numbers. No weirdness.</p>
+      </div>
+      <div class="mt-12 grid md:grid-cols-4 gap-6">
+        <div class="glass rounded-2xl p-6 text-center"><div class="text-3xl font-display">1B</div><div class="text-white/70 mt-1">Total Supply</div></div>
+        <div class="glass rounded-2xl p-6 text-center"><div class="text-3xl font-display">0%</div><div class="text-white/70 mt-1">Buy / Sell Tax</div></div>
+        <div class="glass rounded-2xl p-6 text-center"><div class="text-3xl font-display">Burned</div><div class="text-white/70 mt-1">LP</div></div>
+        <div class="glass rounded-2xl p-6 text-center"><div class="text-3xl font-display">0%</div><div class="text-white/70 mt-1">Team Allocation</div></div>
+      </div>
+      <div class="mt-10 glass rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <div class="text-white/60 text-sm">Contract Address</div>
+          <div class="font-mono text-sm md:text-base break-all" id="caFull">0xC0DY0000000000000000000000000000000000</div>
+        </div>
+        <div class="flex gap-2">
+          <button id="copyCA3" class="btn btn-outline">Copy</button>
+          <a href="#" target="_blank" class="btn btn-primary">View on Explorer</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY / MEME WALL -->
+  <section id="gallery" class="py-20 md:py-28 bg-ocean/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="font-display text-3xl md:text-5xl font-bold">Meme Wall</h2>
+        <p class="mt-4 text-white/80">Drop the cutest, funniest, most penguin-core memes.</p>
+      </div>
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <img src="2.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 1" />
+        <img src="3.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 2" />
+        <img src="4.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 3" />
+        <img src="5.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 4" />
+        <img src="6.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 5" />
+        <img src="7.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 6" />
+        <img src="1.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 7" />
+        <img src="3.png" class="rounded-xl object-cover w-full h-48 glass hover:scale-[1.03] transition" alt="meme 8" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="font-display text-3xl md:text-5xl font-bold">Roadmap (lol)</h2>
+        <p class="mt-4 text-white/80">Simple, transparent, community-first.</p>
+      </div>
+      <div class="mt-12 grid md:grid-cols-3 gap-6">
+        <div class="glass rounded-2xl p-6">
+          <div class="badge bg-white/10 text-brand-300">Phase 1</div>
+          <h3 class="mt-3 font-display text-xl">Launch & Vibes</h3>
+          <ul class="mt-3 space-y-2 text-white/70 list-disc list-inside">
+            <li>Website + socials</li>
+            <li>Moonshot listing</li>
+            <li>First meme drops</li>
+          </ul>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="badge bg-white/10 text-brand-300">Phase 2</div>
+          <h3 class="mt-3 font-display text-xl">Grow the Army</h3>
+          <ul class="mt-3 space-y-2 text-white/70 list-disc list-inside">
+            <li>Partnership memes</li>
+            <li>Contests & raids</li>
+            <li>DEX tools integrations</li>
+          </ul>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="badge bg-white/10 text-brand-300">Phase 3</div>
+          <h3 class="mt-3 font-display text-xl">Penguin World</h3>
+          <ul class="mt-3 space-y-2 text-white/70 list-disc list-inside">
+            <li>Merch & IRL stunts</li>
+            <li>Grants for creators</li>
+            <li>Community treasury polls</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 md:py-28 bg-ocean/60">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="font-display text-3xl md:text-5xl font-bold">FAQ</h2>
+        <p class="mt-4 text-white/80">We keep it simple.</p>
+      </div>
+      <div class="mt-10 grid gap-4">
+        <!-- item -->
+        <div class="glass rounded-xl">
+          <button class="w-full text-left px-5 py-4 flex items-center justify-between faqBtn">
+            <span class="font-bold">Is this financial advice?</span>
+            <svg class="w-5 h-5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="px-5 pb-5 hidden faqBody text-white/70">No. This is a meme coin. Do your own research, don’t risk what you can’t lose.</div>
+        </div>
+        <div class="glass rounded-xl">
+          <button class="w-full text-left px-5 py-4 flex items-center justify-between faqBtn"><span class="font-bold">What are the taxes?</span><svg class="w-5 h-5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg></button>
+          <div class="px-5 pb-5 hidden faqBody text-white/70">0% buy / 0% sell.</div>
+        </div>
+        <div class="glass rounded-xl">
+          <button class="w-full text-left px-5 py-4 flex items-center justify-between faqBtn"><span class="font-bold">LP status?</span><svg class="w-5 h-5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg></button>
+          <div class="px-5 pb-5 hidden faqBody text-white/70">LP burned. Contract renounced or standard ownership depending on launch specifics.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA STRIP -->
+  <section class="py-14 border-y border-white/10 bg-hero">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <h3 class="font-display text-2xl md:text-3xl font-bold">Ready to ride? Grab your $CODY.</h3>
+      <div class="flex gap-3">
+        <a target="_blank" href="#" class="btn btn-primary">Buy Now</a>
+        <a target="_blank" href="#" class="btn btn-outline">Open Chart</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+        <div class="flex items-center gap-3">
+          <img src="logo.png" class="h-10 w-10 rounded-full" alt="$CODY" />
+          <div>
+            <div class="font-display font-bold">$CODY</div>
+            <div class="text-white/60 text-sm">Surf responsibly. It’s a meme coin.</div>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <a target="_blank" href="#" class="btn btn-outline">Twitter</a>
+          <a target="_blank" href="#" class="btn btn-outline">Telegram</a>
+          <a target="_blank" href="#" class="btn btn-outline">Dexscreener</a>
+        </div>
+      </div>
+      <div class="mt-8 text-white/50 text-xs">© 2025 $CODY. All memes reserved. Not financial advice.</div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav
+    const navBtn = document.getElementById('navBtn');
+    const navMenu = document.getElementById('navMenu');
+    navBtn?.addEventListener('click', () => navMenu.classList.toggle('hidden'));
+
+    // Copy CA helpers
+    const CA = '0xC0DY0000000000000000000000000000000000';
+    document.getElementById('copyCA')?.addEventListener('click', () => navigator.clipboard.writeText(CA));
+    document.getElementById('copyCA2')?.addEventListener('click', () => navigator.clipboard.writeText(CA));
+    document.getElementById('copyCA3')?.addEventListener('click', () => navigator.clipboard.writeText(CA));
+
+    // FAQ accordion
+    document.querySelectorAll('.faqBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const body = btn.parentElement.querySelector('.faqBody');
+        body.classList.toggle('hidden');
+      });
+    });
+
+    // GSAP entrance animations
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.utils.toArray('.glass').forEach((el) => {
+      gsap.from(el, { opacity: 0, y: 24, duration: .8, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
+    });
+  </script>
+</body>
+</html>
+
